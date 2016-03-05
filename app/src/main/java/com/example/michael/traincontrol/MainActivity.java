@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -60,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothDevice bluetoothDevice; // The BLE device.
     private BluetoothGatt bluetoothGATT; // Access to GATT services.
     private String bleDeviceID;
-    private boolean connected; // Store if BLE device is connected.
     private static final UUID BLE_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     BluetoothSocket bluetoothSocket;
@@ -194,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
             this.handler.postDelayed(this.runnableScanner, SCAN_PERIOD);
             // Start scanning now.
             this.bluetoothDevice = null;
-            this.connected = false;
             this.hideListView();
             this.destroyBleConnection();
             progressBar.setVisibility(View.VISIBLE);
@@ -299,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     break;
-                // Disconnect with BLE device.
+                // Disconnect from BLE device.
                 case BluetoothProfile.STATE_DISCONNECTED:
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
@@ -319,11 +316,11 @@ public class MainActivity extends AppCompatActivity {
      * Connect with BLE device.
      */
     private void connected() {
-        this.connected = true;
         progressBar.setVisibility(View.GONE);
         this.showListView();
 
         // TODO: work here!
+
         /*
         try {
             this.bluetoothSocket = this.bluetoothDevice.createRfcommSocketToServiceRecord(BLE_UUID);
@@ -331,11 +328,7 @@ public class MainActivity extends AppCompatActivity {
         }
         catch (IOException e) {
             e.printStackTrace();
-            try {
-                this.bluetoothSocket.close();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
+            this.destroyBleConnection();
         }
         */
     }
@@ -344,7 +337,6 @@ public class MainActivity extends AppCompatActivity {
      * Disconnect from BLE device.
      */
     private void disconnected() {
-        this.connected = false;
         progressBar.setVisibility(View.GONE);
         this.hideListView();
         Toast.makeText(MainActivity.this, R.string.ble_disconnected, Toast.LENGTH_LONG).show();
