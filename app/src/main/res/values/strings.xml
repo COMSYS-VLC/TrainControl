@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">TrainControl</string>
+
+    <string name="saved_device_id_default">00:07:80:71:BC:0B</string>
+
+    <string name="action_reconnect">Reconnect</string>
+    <string name="action_setBLEdeviceID">Set BLE device ID</string>
+
+    <string name="ble_not_supported">This device does not support Bluetooth Low Energy</string>
+    <string name="bluetooth_necessary">You must enable Bluetooth for this App</string>
+    <string name="unknown_device">The device is not known</string>
+    <string name="no_BLE_device_found">No Bluetooth device found</string>
+    <string name="location_required">Localization must be enabled to find Bluetooth devices</string>
+    <string name="ble_disconnected">The connection with the Bluetooth device was lost</string>
+
+    <string name="tracksignal_name">Track Signal</string>
+    <string name="turnout_name">Turnout</string>
+    <string name="led_name">LED</string>
+    <string name="speed_name">Speed:</string>
+    <string name="forward_name">Forward</string>
+    <string name="backward_name">Backward</string>
+
+    <string-array name="spinner_values">
+        <item>Off</item>
+        <item>Blinking</item>
+        <item>On</item>
+    </string-array>
+</resources>
