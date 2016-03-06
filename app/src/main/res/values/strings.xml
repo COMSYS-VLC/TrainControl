@@ -25,4 +25,14 @@
         <item>Blinking</item>
         <item>On</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="connect_device_name">Connecting to BLE device %1$s...</string>
+    <string name="connect_device_addr">(%1$s)</string>
+    <string name="connect_device_error_name">Connection to %1$s failed.</string>
+    <string name="retry">Retry</string>
+    <string name="scan_other">Scan for other</string>
+    <string name="connect_error_msg">%1$s</string>
+    <string name="abort">Abort</string>
 </resources>

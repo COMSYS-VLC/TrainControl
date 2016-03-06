@@ -1,0 +1,54 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.michael.traincontrol.ConnectErrorFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/connect_device_error_name"
+        android:id="@+id/text_connect_error_name"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/text_connect_error_msg"
+        android:layout_below="@+id/text_connect_error_name"
+        android:layout_centerHorizontal="true"
+        android:text="@string/connect_error_msg"
+        android:textAlignment="center" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_connect_error_msg"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retry"
+            android:id="@+id/button_retry"
+            android:layout_below="@+id/text_connect_error_msg"
+            android:layout_alignStart="@+id/text_connect_error_name"
+            android:layout_gravity="center_vertical" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scan_other"
+            android:id="@+id/button_scan"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/text_connect_error_msg"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
+</RelativeLayout>

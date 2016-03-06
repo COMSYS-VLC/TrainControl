@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.michael.traincontrol.ConnectFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress_connect"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:indeterminateOnly="true"
+        android:indeterminate="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/connect_device_name"
+        android:id="@+id/text_device_name"
+        android:layout_above="@+id/text_device_id"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/connect_device_addr"
+        android:id="@+id/text_device_id"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/progress_connect"
+        android:textAlignment="center" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/abort"
+        android:id="@+id/button_abort"
+        android:layout_below="@+id/progress_connect"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
