@@ -12,10 +12,10 @@
         android:textAppearance="@android:style/TextAppearance.Large"
         android:text="Bluetooth is not enabled"
         android:layout_gravity="center"
-        android:layout_marginBottom="47dp"
         android:id="@+id/NoBtHeading"
         android:layout_above="@+id/NoBtExplanation"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center" />
 
     <Button
         android:layout_width="wrap_content"
@@ -23,10 +23,8 @@
         android:text="Enable bluetooth"
         android:id="@+id/EnableBtButton"
         android:layout_gravity="center"
-        android:layout_marginLeft="271dp"
         android:layout_below="@+id/NoBtExplanation"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="38dp" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,5 +33,6 @@
         android:text="Bluetooth is required for this app to function"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/NoBtExplanation" />
+        android:id="@+id/NoBtExplanation"
+        android:textAlignment="center" />
 </RelativeLayout>

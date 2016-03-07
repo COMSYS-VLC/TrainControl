@@ -12,19 +12,19 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/connect_device_error_name"
         android:id="@+id/text_connect_error_name"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:layout_above="@+id/text_connect_error_msg"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/text_connect_error_msg"
-        android:layout_below="@+id/text_connect_error_name"
-        android:layout_centerHorizontal="true"
         android:text="@string/connect_error_msg"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <LinearLayout
         android:orientation="horizontal"

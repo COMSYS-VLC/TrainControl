@@ -49,10 +49,8 @@ public class CustomAdapter extends ArrayAdapter<ControllableObject> {
         if (this.controllableObjects[position] instanceof Turnout) {
             convertView = inflater.inflate(R.layout.turnout, parent, false);
 
-            TextView textView = (TextView) convertView.findViewById(R.id.textViewTurnout);
-            textView.setText(this.controllableObjects[position].getName());
-
             Switch switcher = (Switch) convertView.findViewById(R.id.switchTurnout);
+            switcher.setText(this.controllableObjects[position].getName());
             switcher.setChecked(((Turnout) this.controllableObjects[position]).getStraight());
             switcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override

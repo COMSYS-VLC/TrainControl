@@ -153,6 +153,14 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
         // TODO
     }
 
+    private void send(byte[] data) {
+        if(null != mBleGatt &&
+                mBleGatt.getConnectionState(mBleDevice) == BluetoothProfile.STATE_CONNECTED) {
+            mBleTxCharacteristic.setValue(data);
+            mBleGatt.writeCharacteristic(mBleTxCharacteristic);
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -221,7 +229,7 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
         mBleGatt.writeDescriptor(descriptor);
 
         showControlList();
-        Toast.makeText(getContext(), "Connected with device " + mBleDevice.getName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Connected with device " + mBleDeviceName, Toast.LENGTH_SHORT).show();
     }
 
     private void onDisconnected() {
@@ -246,10 +254,12 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
     }
 
     private void showConnectionError(String msg) {
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.control_container,
-                        ConnectErrorFragment.newInstance(mBleDevice.getName(), msg))
-                .commit();
+        if(isResumed()) {
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.control_container,
+                            ConnectErrorFragment.newInstance(mBleDeviceName, msg))
+                    .commit();
+        }
     }
 
     private void showConnecting() {

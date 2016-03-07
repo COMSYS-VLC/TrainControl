@@ -39,7 +39,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Scanning..."
         android:layout_above="@+id/progressBar"
-        android:layout_marginBottom="92dp"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
