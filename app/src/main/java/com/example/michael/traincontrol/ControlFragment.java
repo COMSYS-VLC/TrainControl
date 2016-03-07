@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 
@@ -295,31 +296,42 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
 
     @Override
     public void listFragmentEventOccurred(ControllableObject controllableObject) {
-        byte[] message = new byte[] {controllableObject.getId(), (byte)0x00};
+        // Message consists of:
+        // 1 byte header: 0xFF.
+        // 1 byte object id.
+        // 1 byte payload (different for LED/Turnout/TrackSignal.
+        // 1 byte CRC-8.
+        byte[] message = new byte[] {(byte)0xFF, controllableObject.getId(), (byte)0x00, (byte)0x00};
 
         // LED.
         if (controllableObject instanceof LED) {
             switch (((LED)controllableObject).getLedState()) {
                 case OFF:
-                    message[1] = (byte)0;
+                    message[2] = (byte)0;
                     break;
                 case BLINKING:
-                    message[1] = (byte)1;
+                    message[2] = (byte)1;
                     break;
                 case ON:
-                    message[1] = (byte)2;
+                    message[2] = (byte)2;
                     break;
             }
         }
         // Turnout.
         else if(controllableObject instanceof Turnout) {
-            message[1] = (byte)(((Turnout)controllableObject).getStraight() ? 0 : 1);
+            message[2] = (byte)(((Turnout)controllableObject).getStraight() ? 0 : 1);
         }
         // Tracksignal.
         else if (controllableObject instanceof TrackSignal) {
-            message[1] = (byte)( ((TrackSignal)controllableObject).getSpeed()
+            message[2] = (byte)( ((TrackSignal)controllableObject).getSpeed()
                     + (((TrackSignal)controllableObject).getForward() ? 0 : 128) );
         }
+
+        // CRC-8.
+        CRC8 crc = new CRC8();
+        byte[] subset = Arrays.copyOfRange(message, 0, 3); // Only Header + ID + "Payload".
+        crc.update(subset, 0, subset.length);
+        message[3] = (byte)crc.getValue();
 
         this.send(message);
     }
