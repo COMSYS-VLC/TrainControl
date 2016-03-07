@@ -5,9 +5,9 @@ package com.example.michael.traincontrol;
  * Created by Michael on 02.03.2016.
  * Describes a turnout.
  */
-public class Turnout extends ControllableObject {
+class Turnout extends ControllableObject {
     // Is the turnout straight?
-    boolean straight;
+    private boolean straight;
 
     /**
      * Constructor.

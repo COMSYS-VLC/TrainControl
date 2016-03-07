@@ -6,7 +6,7 @@ package com.example.michael.traincontrol;
  */
 public class LED extends ControllableObject {
     enum LedState {OFF, BLINKING, ON};
-    LedState ledstate;
+    private LedState ledstate;
 
     /**
      * Constructor.

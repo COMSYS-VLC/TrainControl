@@ -19,9 +19,9 @@ import android.widget.ToggleButton;
  * Created by Michael on 02.03.2016.
  * CustomAdapter to fill the listView with TrackSignals respective Turnout objects.
  */
-public class CustomAdapter extends ArrayAdapter<ControllableObject> {
-    Context context;
-    ControllableObject[] controllableObjects;
+class CustomAdapter extends ArrayAdapter<ControllableObject> {
+    private Context context;
+    private ControllableObject[] controllableObjects;
 
     /**
      * Constructor.

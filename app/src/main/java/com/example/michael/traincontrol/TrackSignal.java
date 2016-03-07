@@ -5,11 +5,11 @@ package com.example.michael.traincontrol;
  * Created by Michael on 02.03.2016.
  * Describes a track signal.
  */
-public class TrackSignal extends ControllableObject {
+class TrackSignal extends ControllableObject {
     // What speed should the track signal show?
-    int speed;
+    private int speed;
     // Is the train going forwards or backwards?
-    boolean forward;
+    private boolean forward;
 
     /**
      * Constructor.
