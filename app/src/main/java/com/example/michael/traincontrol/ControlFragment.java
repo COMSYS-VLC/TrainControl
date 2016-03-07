@@ -110,7 +110,20 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            super.onCharacteristicChanged(gatt, characteristic);
+            if(characteristic == mBleRxCharacteristic) {
+                final Activity activity = getActivity();
+                if(null != activity) {
+                    byte[] value = characteristic.getValue();
+                    final byte[] data = new byte[value.length];
+                    System.arraycopy(value, 0, data, 0, value.length);
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            onReceived(data);
+                        }
+                    });
+                }
+            }
         }
     };
     public ControlFragment() {
@@ -153,8 +166,7 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
     }
 
     private void send(byte[] data) {
-        if(null != mBleGatt &&
-                mBleGatt.getConnectionState(mBleDevice) == BluetoothProfile.STATE_CONNECTED) {
+        if(null != mBleGatt) {
             mBleTxCharacteristic.setValue(data);
             mBleGatt.writeCharacteristic(mBleTxCharacteristic);
         }
