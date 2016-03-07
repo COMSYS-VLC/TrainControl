@@ -37,4 +37,12 @@ class Turnout extends ControllableObject {
         this.straight = straight;
         this.userInputEvent.userInputOccurred(this);
     }
+
+    /**
+     * Set straight without invocation.
+     * @param straight True if the turnout is straight, false if it is diverging.
+     */
+    public void setSilentStraight(boolean straight) {
+        this.straight = straight;
+    }
 }

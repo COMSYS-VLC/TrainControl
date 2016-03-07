@@ -55,6 +55,14 @@ public class LED extends ControllableObject {
     }
 
     /**
+     * Setter for LED state without invocation.
+     * @param ledState LED state.
+     */
+    public void setSilentLedState(LedState ledState) {
+        this.ledstate = ledState;
+    }
+
+    /**
      * Set the led state with a given spinner index.
      * @param index Spinner index.
      */

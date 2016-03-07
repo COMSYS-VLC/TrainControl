@@ -51,11 +51,27 @@ class TrackSignal extends ControllableObject {
     }
 
     /**
+     * Set speed without invocation.
+     * @param speed The speed to which the track signal is set.
+     */
+    public void setSilentSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    /**
      * Set forward.
      * @param forward Should the train move forwards?
      */
     public void setForward(boolean forward) {
         this.forward = forward;
         this.userInputEvent.userInputOccurred(this);
+    }
+
+    /**
+     * Set forward without invocation.
+     * @param forward Should the train move forwards?
+     */
+    public void setSilentForward(boolean forward) {
+        this.forward = forward;
     }
 }

@@ -72,6 +72,7 @@ class ControllableObject {
      * @param color The color of the controllable object.
      */
     public void setColor(int color) {
+        // TODO: rausnehmen.
         this.color = color;
         this.userInputEvent.userInputOccurred(this);
     }

@@ -29,13 +29,14 @@ public class ControlListFragment extends Fragment implements ControllableObject.
 
     private ListView mListView;
 
+    private CustomAdapter mCustomAdapter;
+
     public ControlListFragment() {
         // Required empty public constructor
 
         for (ControllableObject controllableObject : this.controllableObjects) {
             controllableObject.setUserInputEvent(this);
         }
-
     }
 
 
@@ -46,7 +47,8 @@ public class ControlListFragment extends Fragment implements ControllableObject.
         View view = inflater.inflate(R.layout.fragment_control_list, container, false);
 
         mListView = (ListView) view.findViewById(R.id.listView);
-        mListView.setAdapter(new CustomAdapter(getContext(), this.controllableObjects));
+        this.mCustomAdapter = new CustomAdapter(getContext(), this.controllableObjects);
+        mListView.setAdapter(mCustomAdapter);
 
         return view;
     }
@@ -63,7 +65,50 @@ public class ControlListFragment extends Fragment implements ControllableObject.
             this.controlListFragmentEvent.listFragmentEventOccurred(controllableObject);
     }
 
-    public void setControlFragment(ControlFragment controlFragment) {
-        this.controlListFragmentEvent = controlFragment;
+    /**
+     * Process data received from trackController.
+     * @param data 2 byte. 1st: objectID, 2nd: "payload".
+     */
+    public void updateData(byte[] data) {
+        // TODO: NOT TESTED!
+        // Check which object the objectID is referred to.
+        int index = -1;
+        for (int i = 0; i < this.controllableObjects.length; i++) {
+            if (this.controllableObjects[i].getId() == data[0]) {
+                index = i;
+            }
+        }
+
+        if (index == -1) {
+            return;
+        }
+
+        // Update object.
+        if (this.controllableObjects[index] instanceof LED) {
+            switch (data[1]) {
+                case 0x00:
+                    ((LED)this.controllableObjects[index]).setSilentLedState(LED.LedState.OFF);
+                    break;
+                case 0x01:
+                    ((LED)this.controllableObjects[index]).setSilentLedState(LED.LedState.BLINKING);
+                    break;
+                case 0x10:
+                    ((LED)this.controllableObjects[index]).setSilentLedState(LED.LedState.ON);
+                    break;
+                default:
+                    ((LED)this.controllableObjects[index]).setSilentLedState(LED.LedState.OFF);
+                    break;
+            }
+        }
+        else if (this.controllableObjects[index] instanceof TrackSignal) {
+            ((TrackSignal)this.controllableObjects[index]).setSilentForward((data[1] & 0x80) == 0x00);
+            ((TrackSignal)this.controllableObjects[index]).setSilentSpeed((data[1] & 0x7F));
+        }
+        else if (this.controllableObjects[index] instanceof Turnout) {
+            ((Turnout)this.controllableObjects[index]).setSilentStraight(data[1] == 0x00);
+        }
+
+        // TODO: Give updated controllableObjects[index] to mListView.adapter. Does this work?
+        this.mCustomAdapter.notifyDataSetChanged();
     }
 }
