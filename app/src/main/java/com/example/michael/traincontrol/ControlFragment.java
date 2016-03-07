@@ -182,23 +182,30 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
 
         // Check if readBuffer has the correct length & header.
         if (mReadBuffer.size() >= 4 && mReadBuffer.get(0) == (byte)0xFF) {
-            // Check CRC checksum.
-            byte[] subset = new byte[] {mReadBuffer.get(0),
-                    mReadBuffer.get(1), mReadBuffer.get(2)}; // Only Header + ID + "Payload".
+            // Check CRC-8 checksum.
+            byte[] subset = new byte[] {mReadBuffer.get(0), mReadBuffer.get(1), mReadBuffer.get(2)};
             this.crc.reset();
             this.crc.update(subset, 0, subset.length);
+
             if ((byte)this.crc.getValue() == mReadBuffer.get(3)) {
                 // Extract packet from readBuffer.
                 byte[] packet = new byte[] { mReadBuffer.get(1), mReadBuffer.get(2) };
                 for (int i = 0; i <= 3; i++) {
                     mReadBuffer.remove(i);
                 }
-                // TODO: packet has to be further processed ...
+
+                ((ControlListFragment)getChildFragmentManager().findFragmentByTag("ControlFragment")).updateData(packet);
             }
         }
     }
 
     private void send(byte[] data) {
+        // CRC-8.
+        byte[] subset = Arrays.copyOfRange(data, 0, 3); // Only Header + ID + "Payload".
+        this.crc.reset();
+        this.crc.update(subset, 0, subset.length);
+        data[3] = (byte)this.crc.getValue();
+
         if(null != mBleGatt) {
             mBleTxCharacteristic.setValue(data);
             mBleGatt.writeCharacteristic(mBleTxCharacteristic);
@@ -275,6 +282,10 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
 
         showControlList();
         Toast.makeText(getContext(), "Connected with device " + mBleDeviceName, Toast.LENGTH_SHORT).show();
+
+        // Send init message over Bluetooth.
+        byte[] data = new byte[] {(byte)0xFF, (byte)0xFE, (byte)0x00, (byte)0x00};
+        send(data);
     }
 
     private void onDisconnected() {
@@ -316,7 +327,7 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
 
     private void showControlList() {
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.control_container, new ControlListFragment())
+                .replace(R.id.control_container, new ControlListFragment(), "ControlFragment")
                 .commit();
     }
 
@@ -358,12 +369,6 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
             message[2] = (byte)( ((TrackSignal)controllableObject).getSpeed()
                     + (((TrackSignal)controllableObject).getForward() ? 0 : 128) );
         }
-
-        // CRC-8.
-        byte[] subset = Arrays.copyOfRange(message, 0, 3); // Only Header + ID + "Payload".
-        this.crc.reset();
-        this.crc.update(subset, 0, subset.length);
-        message[3] = (byte)this.crc.getValue();
 
         this.send(message);
     }
