@@ -27,7 +27,8 @@ import java.util.UUID;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ControlFragment extends Fragment implements ConnectFragment.ConnectAbortHandler, ConnectErrorFragment.ConnectErrorHandler {
+public class ControlFragment extends Fragment implements ConnectFragment.ConnectAbortHandler,
+        ConnectErrorFragment.ConnectErrorHandler, ControlListFragment.IControlListFragmentEvent {
 
     private static final String ARG_BLE_DEVICE_NAME = "devname";
     private static final String ARG_BLE_DEVICE_ADDR = "devaddr";
@@ -279,6 +280,37 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
     public void abortConnecting() {
         showConnectionError("Aborted by user");
         disconnect();
+    }
+
+    @Override
+    public void listFragmentEventOccurred(ControllableObject controllableObject) {
+        byte[] message = new byte[] {controllableObject.getId(), (byte)0x00};
+
+        // LED.
+        if (controllableObject instanceof LED) {
+            switch (((LED)controllableObject).getLedState()) {
+                case OFF:
+                    message[1] = (byte)0;
+                    break;
+                case BLINKING:
+                    message[1] = (byte)1;
+                    break;
+                case ON:
+                    message[1] = (byte)2;
+                    break;
+            }
+        }
+        // Turnout.
+        else if(controllableObject instanceof Turnout) {
+            message[1] = (byte)(((Turnout)controllableObject).getStraight() ? 0 : 1);
+        }
+        // Tracksignal.
+        else if (controllableObject instanceof TrackSignal) {
+            message[1] = (byte)( ((TrackSignal)controllableObject).getSpeed()
+                    + (((TrackSignal)controllableObject).getForward() ? 0 : 128) );
+        }
+
+        this.send(message);
     }
 
     public interface ScanInitiator {

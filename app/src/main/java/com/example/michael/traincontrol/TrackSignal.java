@@ -13,13 +13,14 @@ public class TrackSignal extends ControllableObject {
 
     /**
      * Constructor.
+     * @param id The id of the track signal.
      * @param color The color of the track signal.
      * @param name The name of the track signal.
      * @param speed The speed which the track signal shows.
      * @param forward If the train goes forwards or backwards
      */
-    public TrackSignal(int color, String name, int speed, boolean forward) {
-        super(color, name);
+    public TrackSignal(byte id, int color, String name, int speed, boolean forward) {
+        super(id, color, name);
         this.speed = speed;
         this.forward = forward;
     }
@@ -46,6 +47,7 @@ public class TrackSignal extends ControllableObject {
      */
     public void setSpeed(int speed) {
         this.speed = speed;
+        this.userInputEvent.userInputOccurred(this);
     }
 
     /**
@@ -54,5 +56,6 @@ public class TrackSignal extends ControllableObject {
      */
     public void setForward(boolean forward) {
         this.forward = forward;
+        this.userInputEvent.userInputOccurred(this);
     }
 }

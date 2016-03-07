@@ -47,7 +47,7 @@ android:orientation="horizontal" >
                 android:id="@+id/seekBarSpeed"
                 android:layout_weight="1"
                 android:indeterminate="false"
-                android:max="255"
+                android:max="127"
                 android:progress="124"/>
         </LinearLayout>
     </LinearLayout>

@@ -10,12 +10,13 @@ public class LED extends ControllableObject {
 
     /**
      * Constructor.
+     * @param id The id of the LED.
      * @param color The color of the LED.
      * @param name The name of the LED.
      * @param ledState The state of the LED.
      */
-    public LED(int color, String name, LedState ledState) {
-        super(color, name);
+    public LED(byte id, int color, String name, LedState ledState) {
+        super(id, color, name);
         this.ledstate = ledState;
     }
 
@@ -50,6 +51,7 @@ public class LED extends ControllableObject {
      */
     public void setLedState(LedState ledState) {
         this.ledstate = ledState;
+        this.userInputEvent.userInputOccurred(this);
     }
 
     /**
@@ -70,5 +72,6 @@ public class LED extends ControllableObject {
             default:
                 break;
         }
+        this.userInputEvent.userInputOccurred(this);
     }
 }

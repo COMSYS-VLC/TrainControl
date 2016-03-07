@@ -11,12 +11,13 @@ public class Turnout extends ControllableObject {
 
     /**
      * Constructor.
+     * @param id The id of the turnout.
      * @param color The color of the turnout.
      * @param name The name of the turnout.
      * @param straight Is the turnout straight?
      */
-    public Turnout(int color, String name, boolean straight) {
-        super(color, name);
+    public Turnout(byte id, int color, String name, boolean straight) {
+        super(id, color, name);
         this.straight = straight;
     }
 
@@ -34,5 +35,6 @@ public class Turnout extends ControllableObject {
      */
     public void setStraight(boolean straight) {
         this.straight = straight;
+        this.userInputEvent.userInputOccurred(this);
     }
 }

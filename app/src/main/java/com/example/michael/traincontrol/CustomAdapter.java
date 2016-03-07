@@ -127,12 +127,4 @@ public class CustomAdapter extends ArrayAdapter<ControllableObject> {
 
         return convertView;
     }
-
-    public ControllableObject[] getControllableObjects() {
-        return this.controllableObjects;
-    }
-
-    public void setControllableObjects(ControllableObject[] controllableObjects) {
-        this.controllableObjects = controllableObjects;
-    }
 }
