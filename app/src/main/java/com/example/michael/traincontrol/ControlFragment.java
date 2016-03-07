@@ -14,12 +14,15 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.TypedArrayUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -29,6 +32,8 @@ import java.util.UUID;
 public class ControlFragment extends Fragment implements ConnectFragment.ConnectAbortHandler,
         ConnectErrorFragment.ConnectErrorHandler, ControlListFragment.IControlListFragmentEvent {
 
+    private final CRC8 crc = new CRC8();
+    List<Byte> mReadBuffer = new ArrayList<>();
     private static final String ARG_BLE_DEVICE_NAME = "devname";
     private static final String ARG_BLE_DEVICE_ADDR = "devaddr";
     private static final String ARG_BLE_SERVICE_UUID = "bleservice";
@@ -163,7 +168,34 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
     }
 
     private void onReceived(byte[] data) {
-        // TODO
+        // TODO: NOT TESTED!
+
+        // Fill buffer.
+        for (byte b : data) {
+            mReadBuffer.add(b);
+        }
+
+        // Remove all elements until a header is found.
+        while (mReadBuffer.size() > 0 && mReadBuffer.get(0) != (byte)0xFF) {
+            mReadBuffer.remove(0);
+        }
+
+        // Check if readBuffer has the correct length & header.
+        if (mReadBuffer.size() >= 4 && mReadBuffer.get(0) == (byte)0xFF) {
+            // Check CRC checksum.
+            byte[] subset = new byte[] {mReadBuffer.get(0),
+                    mReadBuffer.get(1), mReadBuffer.get(2)}; // Only Header + ID + "Payload".
+            this.crc.reset();
+            this.crc.update(subset, 0, subset.length);
+            if ((byte)this.crc.getValue() == mReadBuffer.get(3)) {
+                // Extract packet from readBuffer.
+                byte[] packet = new byte[] { mReadBuffer.get(1), mReadBuffer.get(2) };
+                for (int i = 0; i <= 3; i++) {
+                    mReadBuffer.remove(i);
+                }
+                // TODO: packet has to be further processed ...
+            }
+        }
     }
 
     private void send(byte[] data) {
@@ -328,10 +360,10 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
         }
 
         // CRC-8.
-        CRC8 crc = new CRC8();
         byte[] subset = Arrays.copyOfRange(message, 0, 3); // Only Header + ID + "Payload".
-        crc.update(subset, 0, subset.length);
-        message[3] = (byte)crc.getValue();
+        this.crc.reset();
+        this.crc.update(subset, 0, subset.length);
+        message[3] = (byte)this.crc.getValue();
 
         this.send(message);
     }

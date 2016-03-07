@@ -69,7 +69,10 @@ public class MainActivity extends AppCompatActivity implements BluetoothEnableFr
 
         switch (id) {
             case R.id.action_reconnect:
-                //TODO: this.scanLeDevice(true);
+                if (getSupportFragmentManager().findFragmentByTag("fragment_connect") != null) {
+                    startConnection(mPreferences.getString(PREF_KEY_BLEDEV_NAME, ""),
+                            mPreferences.getString(PREF_KEY_BLEDEV_ADDR, ""));
+                }
                 break;
             default:
                 break;
@@ -134,6 +137,6 @@ public class MainActivity extends AppCompatActivity implements BluetoothEnableFr
     private void startConnection(String bleDevName, String bleDevAddr) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, ControlFragment.newInstance(bleDevName, bleDevAddr,
-                        BLEBEE_SERVICE_UUID, BLEBEE_RX_CHARACTERISTIC, BLEBEE_TX_CHARACTERISTIC)).commit();
+                        BLEBEE_SERVICE_UUID, BLEBEE_RX_CHARACTERISTIC, BLEBEE_TX_CHARACTERISTIC), "fragment_connect").commit();
     }
 }

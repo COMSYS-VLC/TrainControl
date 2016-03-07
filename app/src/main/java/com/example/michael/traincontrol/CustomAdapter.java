@@ -112,7 +112,9 @@ class CustomAdapter extends ArrayAdapter<ControllableObject> {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int index, long id) {
-                    ((LED) controllableObjects[position]).setLedStateSpinnerIndex(index);
+                    if (((LED) controllableObjects[position]).getLedStateSpinnerIndex() != index) {
+                        ((LED) controllableObjects[position]).setLedStateSpinnerIndex(index);
+                    }
                 }
 
                 @Override
