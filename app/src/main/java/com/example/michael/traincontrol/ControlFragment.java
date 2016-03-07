@@ -13,6 +13,7 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -157,6 +158,7 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
             mBleTxCharacteristic.setValue(data);
             mBleGatt.writeCharacteristic(mBleTxCharacteristic);
         }
+
     }
 
     @Override
