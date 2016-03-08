@@ -1,4 +1,4 @@
-package com.example.michael.traincontrol;
+package de.rwthaachen.comsys.laboratory.vlc.traincontrol;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;

@@ -1,4 +1,4 @@
-package com.example.michael.traincontrol;
+package de.rwthaachen.comsys.laboratory.vlc.traincontrol;
 
 /**
  * Created by Michael on 07.03.2016.

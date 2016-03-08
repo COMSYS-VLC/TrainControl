@@ -1,4 +1,4 @@
-package com.example.michael.traincontrol;
+package de.rwthaachen.comsys.laboratory.vlc.traincontrol;
 
 import org.junit.Test;
 

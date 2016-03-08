@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.example.michael.traincontrol"
+        applicationId "de.rwthaachen.comsys.laboratory.vlc.traincontrol"
         minSdkVersion 21
         targetSdkVersion 23
         versionCode 1

@@ -1,4 +1,4 @@
-package com.example.michael.traincontrol;
+package de.rwthaachen.comsys.laboratory.vlc.traincontrol;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
