@@ -1,32 +1,7 @@
 <resources>
     <string name="app_name">TrainControl</string>
-
-    <string name="saved_device_id_default">00:07:80:71:BC:0B</string>
-
     <string name="action_reconnect">Reconnect</string>
-
-    <string name="ble_not_supported">This device does not support Bluetooth Low Energy</string>
-    <string name="bluetooth_necessary">You must enable Bluetooth for this App</string>
-    <string name="unknown_device">The device is not known</string>
-    <string name="no_BLE_device_found">No Bluetooth device found</string>
     <string name="location_required">Localization must be enabled to find Bluetooth devices</string>
-    <string name="ble_disconnected">The connection with the Bluetooth device was lost</string>
-
-    <string name="tracksignal_name">Track Signal</string>
-    <string name="turnout_name">Turnout</string>
-    <string name="led_name">LED</string>
-    <string name="speed_name">Speed:</string>
-    <string name="forward_name">Forward</string>
-    <string name="backward_name">Backward</string>
-
-    <string-array name="spinner_values">
-        <item>Off</item>
-        <item>Blinking</item>
-        <item>On</item>
-    </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="connect_device_name">Connecting to BLE device %1$s...</string>
     <string name="connect_device_addr">(%1$s)</string>
     <string name="connect_device_error_name">Connection to %1$s failed.</string>
@@ -34,4 +9,17 @@
     <string name="scan_other">Scan for other</string>
     <string name="connect_error_msg">%1$s</string>
     <string name="abort">Abort</string>
+    <string name="bonding_failed">Bonding failed</string>
+    <string name="connection_error">Connection error</string>
+    <string name="service_unsupported">Service not supported</string>
+    <string name="missing_characteristic">Required characteristics missing</string>
+    <string name="connected_with_device">Connected with device %1$s</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="device_disconnected">Device disconnected</string>
+    <string name="aborted_by_user">Aborted by user</string>
+    <string name="bluetooth_not_enabled">Bluetooth is not enabled</string>
+    <string name="enable_bluetooth">Enable bluetooth</string>
+    <string name="bluetooth_required">Bluetooth is required for this app to function</string>
+    <string name="scanning">Scanning...</string>
+    <string name="no_matching_device">No matching device found</string>
 </resources>

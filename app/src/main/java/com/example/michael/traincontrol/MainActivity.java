@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothEnableFr
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setLogo(R.mipmap.ic_launcher);
 
         mPreferences = getPreferences(Context.MODE_PRIVATE);
     }
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothEnableFr
         if (requestCode == REQUEST_ENABLE_BT) {
             // Make sure the request was successful.
             if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, R.string.bluetooth_necessary, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.bluetooth_required, Toast.LENGTH_LONG).show();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

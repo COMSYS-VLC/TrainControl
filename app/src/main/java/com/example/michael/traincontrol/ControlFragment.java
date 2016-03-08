@@ -11,17 +11,19 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.res.TypedArrayUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,25 +32,32 @@ import java.util.UUID;
  * A simple {@link Fragment} subclass.
  */
 public class ControlFragment extends Fragment implements ConnectFragment.ConnectAbortHandler,
-        ConnectErrorFragment.ConnectErrorHandler, ControlListFragment.IControlListFragmentEvent {
+        ConnectErrorFragment.ConnectErrorHandler, SendingFragment {
 
-    private final CRC8 crc = new CRC8();
-    List<Byte> mReadBuffer = new ArrayList<>();
     private static final String ARG_BLE_DEVICE_NAME = "devname";
     private static final String ARG_BLE_DEVICE_ADDR = "devaddr";
     private static final String ARG_BLE_SERVICE_UUID = "bleservice";
     private static final String ARG_BLE_RX_UUID = "blerx";
     private static final String ARG_BLE_TX_UUID = "bletx";
+
     private static final String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
+
+    private final CRC8 mCRC = new CRC8();
+
+    private final List<Byte> mReadBuffer = new ArrayList<>();
+    private final List<byte[]> mSendBuffer = new ArrayList<>();
+
     private String mBleDeviceName;
     private String mBleDeviceAddr;
     private String mBleServiceUuid;
     private String mBleRxCharacteristicUuid;
     private String mBleTxCharacteristicUuid;
+
     private BluetoothDevice mBleDevice;
     private BluetoothGatt mBleGatt;
     private BluetoothGattCharacteristic mBleRxCharacteristic;
     private BluetoothGattCharacteristic mBleTxCharacteristic;
+
     private BluetoothGattCallback mBleGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -67,6 +76,7 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
                     }
                 }
             } else {
+                Log.d("BleGatt", "Error: Status: " + status + " State: " + newState);
                 if (null != activity) {
                     activity.runOnUiThread(new Runnable() {
                         @Override
@@ -85,7 +95,7 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        onConnected();
+                        onDiscovered();
                     }
                 });
             }
@@ -111,7 +121,35 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            super.onCharacteristicWrite(gatt, characteristic, status);
+            if(characteristic == mBleTxCharacteristic && BluetoothGatt.GATT_SUCCESS == status) {
+                synchronized (mSendBuffer) {
+                    if(!mSendBuffer.isEmpty()) {
+                        mSendBuffer.remove(0);
+
+                        if (!mSendBuffer.isEmpty()) {
+                            characteristic.setValue(mSendBuffer.get(0));
+                            gatt.writeCharacteristic(characteristic);
+                        }
+                    }
+                }
+            } else if(BluetoothGatt.GATT_FAILURE == status) {
+                Log.d("Control", "Failed to write characteristic: " + characteristic.getUuid().toString());
+            }
+        }
+
+        @Override
+        public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+            if(descriptor.getCharacteristic() == mBleRxCharacteristic) {
+                final Activity activity = getActivity();
+                if(null != activity) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            onConnected();
+                        }
+                    });
+                }
+            }
         }
 
         @Override
@@ -132,6 +170,26 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
             }
         }
     };
+
+    private BroadcastReceiver mBondReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(null != mBleDevice) {
+                if (intent.getAction().equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+                    if(mBleDevice.equals(intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE))) {
+                        final int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR);
+                        if (state == BluetoothDevice.BOND_BONDED) {
+                            mBleGatt = mBleDevice.connectGatt(getContext(), false, mBleGattCallback);
+                        } else if (state == BluetoothDevice.BOND_NONE) {
+                            disconnect();
+                            showConnectionError(context.getString(R.string.bonding_failed));
+                        }
+                    }
+                }
+            }
+        }
+    };
+
     public ControlFragment() {
         // Required empty public constructor
     }
@@ -164,53 +222,45 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
 
     private void onConnectionFailed() {
         disconnect();
-        showConnectionError("Connection error");
+        showConnectionError(getContext().getString(R.string.connection_error));
     }
 
     private void onReceived(byte[] data) {
-        // TODO: NOT TESTED!
-
         // Fill buffer.
         for (byte b : data) {
             mReadBuffer.add(b);
         }
 
-        // Remove all elements until a header is found.
-        while (mReadBuffer.size() > 0 && mReadBuffer.get(0) != (byte)0xFF) {
-            mReadBuffer.remove(0);
-        }
+        // We might have a packet...
+        while(mReadBuffer.size() >= 4) {
+            // Remove all elements until a header is found.
+            while (mReadBuffer.size() > 0 && mReadBuffer.get(0) != (byte) 0xFF) {
+                mReadBuffer.remove(0);
+            }
 
-        // Check if readBuffer has the correct length & header.
-        if (mReadBuffer.size() >= 4 && mReadBuffer.get(0) == (byte)0xFF) {
-            // Check CRC-8 checksum.
-            byte[] subset = new byte[] {mReadBuffer.get(0), mReadBuffer.get(1), mReadBuffer.get(2)};
-            this.crc.reset();
-            this.crc.update(subset, 0, subset.length);
-
-            if ((byte)this.crc.getValue() == mReadBuffer.get(3)) {
-                // Extract packet from readBuffer.
-                byte[] packet = new byte[] { mReadBuffer.get(1), mReadBuffer.get(2) };
-                for (int i = 0; i <= 3; i++) {
-                    mReadBuffer.remove(i);
+            // Check if readBuffer has still the correct length
+            if (mReadBuffer.size() >= 4) {
+                // Check CRC-8 checksum.
+                mCRC.reset();
+                for(int i = 0; i < 3; ++i) {
+                    mCRC.update(mReadBuffer.get(i));
                 }
 
-                ((ControlListFragment)getChildFragmentManager().findFragmentByTag("ControlFragment")).updateData(packet);
+                if (mCRC.getValue() == mReadBuffer.get(3)) {
+                    // Extract packet from readBuffer and handle it
+                    Fragment fragment = getChildFragmentManager().findFragmentByTag("panel");
+                    if(fragment instanceof ReceivingFragment) {
+                        ((ReceivingFragment) fragment).handlePayload(new byte[]{mReadBuffer.get(1), mReadBuffer.get(2)});
+                    }
+
+                    for (int i = 0; i < 4; ++i) {
+                        mReadBuffer.remove(0);
+                    }
+                } else {
+                    mReadBuffer.remove(0);
+                }
             }
         }
-    }
-
-    private void send(byte[] data) {
-        // CRC-8.
-        byte[] subset = Arrays.copyOfRange(data, 0, 3); // Only Header + ID + "Payload".
-        this.crc.reset();
-        this.crc.update(subset, 0, subset.length);
-        data[3] = (byte)this.crc.getValue();
-
-        if(null != mBleGatt) {
-            mBleTxCharacteristic.setValue(data);
-            mBleGatt.writeCharacteristic(mBleTxCharacteristic);
-        }
-
     }
 
     @Override
@@ -231,12 +281,17 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
     public void onPause() {
         disconnect();
 
+        getContext().unregisterReceiver(mBondReceiver);
+
         super.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        getContext().registerReceiver(mBondReceiver, filter);
 
         connect();
     }
@@ -247,16 +302,23 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
         final BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
 
         mBleDevice = bluetoothAdapter.getRemoteDevice(mBleDeviceAddr);
-        mBleGatt = mBleDevice.connectGatt(getContext(), false, mBleGattCallback);
+        if(BluetoothDevice.BOND_NONE == mBleDevice.getBondState()) {
+            mBleDevice.createBond();
+        } else if(BluetoothDevice.BOND_BONDED == mBleDevice.getBondState()) {
+            mBleGatt = mBleDevice.connectGatt(getContext(), false, mBleGattCallback);
+        }
 
         showConnecting();
     }
 
-    private void onConnected() {
+    private void onDiscovered() {
+        if(null == mBleGatt) {
+            return;
+        }
         BluetoothGattService gattService = mBleGatt.getService(UUID.fromString(mBleServiceUuid));
         if(null == gattService) {
             disconnect();
-            showConnectionError("Service not supported");
+            showConnectionError(getContext().getString(R.string.service_unsupported));
             return;
         }
 
@@ -265,13 +327,13 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
 
         if(null == mBleTxCharacteristic || null == mBleRxCharacteristic) {
             disconnect();
-            showConnectionError("Required characteristics missing");
+            showConnectionError(getContext().getString(R.string.missing_characteristic));
             return;
         } else if((mBleTxCharacteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) == 0 ||
                 (((mBleRxCharacteristic.getProperties() & (BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_NOTIFY))
                         != (BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_NOTIFY)))) {
             disconnect();
-            showConnectionError("Required characteristics missing");
+            showConnectionError(getContext().getString(R.string.missing_characteristic));
             return;
         }
 
@@ -280,17 +342,26 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
         descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
         mBleGatt.writeDescriptor(descriptor);
 
-        showControlList();
-        Toast.makeText(getContext(), "Connected with device " + mBleDeviceName, Toast.LENGTH_SHORT).show();
+        mBleTxCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+    }
 
-        // Send init message over Bluetooth.
-        byte[] data = new byte[] {(byte)0xFF, (byte)0xFE, (byte)0x00, (byte)0x00};
-        send(data);
+    private void onConnected() {
+        if(null == mBleGatt) {
+            return;
+        }
+        showControlPanel();
+        Toast.makeText(getContext(), getContext().getString(R.string.connected_with_device, mBleDeviceName), Toast.LENGTH_SHORT).show();
+
+        // Send first pending message
+        if(!mSendBuffer.isEmpty()) {
+            mBleTxCharacteristic.setValue(mSendBuffer.get(0));
+            mBleGatt.writeCharacteristic(mBleTxCharacteristic);
+        }
     }
 
     private void onDisconnected() {
-        Toast.makeText(getContext(), "Disconnected", Toast.LENGTH_SHORT).show();
-        showConnectionError("Device disconnected");
+        Toast.makeText(getContext(), R.string.disconnected, Toast.LENGTH_SHORT).show();
+        showConnectionError(getContext().getString(R.string.device_disconnected));
         disconnect();
     }
 
@@ -298,8 +369,11 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
         if(null != mBleGatt) {
             mBleGatt.close();
             mBleGatt = null;
+            mBleTxCharacteristic = null;
+            mBleRxCharacteristic = null;
         }
         mBleDevice = null;
+        mSendBuffer.clear();
     }
 
     @Override
@@ -325,52 +399,40 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
                 .commit();
     }
 
-    private void showControlList() {
+    private void showControlPanel() {
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.control_container, new ControlListFragment(), "ControlFragment")
+                .replace(R.id.control_container, new ControlPanelFragment(), "panel")
                 .commit();
     }
 
     @Override
     public void abortConnecting() {
-        showConnectionError("Aborted by user");
+        showConnectionError(getContext().getString(R.string.aborted_by_user));
         disconnect();
     }
 
     @Override
-    public void listFragmentEventOccurred(ControllableObject controllableObject) {
-        // Message consists of:
-        // 1 byte header: 0xFF.
-        // 1 byte object id.
-        // 1 byte payload (different for LED/Turnout/TrackSignal.
-        // 1 byte CRC-8.
-        byte[] message = new byte[] {(byte)0xFF, controllableObject.getId(), (byte)0x00, (byte)0x00};
+    public void sendPayload(byte[] data) {
+        if(2 != data.length) {
+            throw new IllegalArgumentException("Payload must consist of 2 bytes");
+        }
+        // Construct packet: 0xFF Header, Payload, CRC-8
+        byte[] packet = new byte[4];
+        packet[0] = (byte) 0xFF;
+        System.arraycopy(data, 0, packet, 1, 2);
+        // CRC-8.
+        this.mCRC.reset();
+        this.mCRC.update(packet, 0, 3);
+        packet[3] = mCRC.getValue();
 
-        // LED.
-        if (controllableObject instanceof LED) {
-            switch (((LED)controllableObject).getLedState()) {
-                case OFF:
-                    message[2] = (byte)0;
-                    break;
-                case BLINKING:
-                    message[2] = (byte)1;
-                    break;
-                case ON:
-                    message[2] = (byte)2;
-                    break;
+        synchronized (mSendBuffer) {
+            mSendBuffer.add(packet);
+
+            if (1 == mSendBuffer.size() && null != mBleGatt && null != mBleTxCharacteristic) {
+                mBleTxCharacteristic.setValue(packet);
+                mBleGatt.writeCharacteristic(mBleTxCharacteristic);
             }
         }
-        // Turnout.
-        else if(controllableObject instanceof Turnout) {
-            message[2] = (byte)(((Turnout)controllableObject).getStraight() ? 0 : 1);
-        }
-        // Tracksignal.
-        else if (controllableObject instanceof TrackSignal) {
-            message[2] = (byte)( ((TrackSignal)controllableObject).getSpeed()
-                    + (((TrackSignal)controllableObject).getForward() ? 0 : 128) );
-        }
-
-        this.send(message);
     }
 
     public interface ScanInitiator {

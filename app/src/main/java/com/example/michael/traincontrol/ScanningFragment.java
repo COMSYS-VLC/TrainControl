@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
@@ -171,15 +172,15 @@ public class ScanningFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(REQUEST_ENABLE_LOCATION == requestCode) {
-            Log.d("BLEScan", "Perm result");
             if(0 == grantResults.length || PackageManager.PERMISSION_GRANTED != grantResults[0]) {
                 Log.d("BLEScan", "Denied");
-                mProgressBar.setVisibility(View.GONE);
+                Toast.makeText(getContext(), R.string.location_required, Toast.LENGTH_LONG).show();
+                /*mProgressBar.setVisibility(View.GONE);
                 mNoDeviceText.setVisibility(View.VISIBLE);
-                mRetryButton.setVisibility(View.VISIBLE);
+                mRetryButton.setVisibility(View.VISIBLE);*/
             } else {
                 Log.d("BLEScan", "Granted");
-                startScan();
+                //startScan();
             }
             return;
         }

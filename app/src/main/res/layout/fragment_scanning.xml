@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="No matching device found"
+        android:text="@string/no_matching_device"
         android:id="@+id/no_device_found"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
@@ -28,7 +28,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Retry"
+        android:text="@string/retry"
         android:id="@+id/retry"
         android:layout_below="@+id/no_device_found"
         android:layout_centerHorizontal="true" />
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Scanning..."
+        android:text="@string/scanning"
         android:layout_above="@+id/progressBar"
         android:layout_centerHorizontal="true" />
 

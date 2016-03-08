@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TrainControl</string>
+    <string name="abort">Abbrechen</string>
+    <string name="aborted_by_user">Durch Nutzer abgebrochen</string>
+    <string name="action_reconnect">Neu verbinden</string>
+    <string name="bluetooth_not_enabled">Bluetooth ist deaktiviert</string>
+    <string name="bluetooth_required">Diese App benötigt für ihre Funktionen Bluetooth</string>
+    <string name="bonding_failed">Pairing fehlgeschlagen</string>
+    <string name="connect_device_addr">(%1$s)</string>
+    <string name="connect_device_error_name">Verbindung mit %1$s fehlgeschlagen.</string>
+    <string name="connect_device_name">Verbinde mit BLE Gerät %1$s...</string>
+    <string name="connect_error_msg">%1$s</string>
+    <string name="connected_with_device">Verbunden mit Gerät %1$s</string>
+    <string name="connection_error">Verbindungsfehler</string>
+    <string name="device_disconnected">Das Gerät hat die Verbindung getrennt</string>
+    <string name="disconnected">Verbindung getrennt</string>
+    <string name="enable_bluetooth">Bluetooth aktivieren</string>
+    <string name="location_required">Standortzugriff muss erlaubt werden, um Bluetooth Geräte zu finden</string>
+    <string name="missing_characteristic">Benötigte Charakteristik fehlt</string>
+    <string name="no_matching_device">Kein passendes Gerät gefunden</string>
+    <string name="retry">Nochmal</string>
+    <string name="scan_other">Anderes Gerät finden</string>
+    <string name="scanning">Suche...</string>
+    <string name="service_unsupported">Dienst wird nicht unterstützt</string>
+</resources>
