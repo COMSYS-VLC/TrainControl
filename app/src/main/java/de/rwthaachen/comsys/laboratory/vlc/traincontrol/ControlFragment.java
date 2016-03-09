@@ -222,7 +222,9 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
 
     private void onConnectionFailed() {
         disconnect();
-        showConnectionError(getContext().getString(R.string.connection_error));
+        if(isResumed()) {
+            showConnectionError(getContext().getString(R.string.connection_error));
+        }
     }
 
     private void onReceived(byte[] data) {
@@ -360,8 +362,10 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
     }
 
     private void onDisconnected() {
-        Toast.makeText(getContext(), R.string.disconnected, Toast.LENGTH_SHORT).show();
-        showConnectionError(getContext().getString(R.string.device_disconnected));
+        if(isResumed()) {
+            Toast.makeText(getContext(), R.string.disconnected, Toast.LENGTH_SHORT).show();
+            showConnectionError(getContext().getString(R.string.device_disconnected));
+        }
         disconnect();
     }
 
