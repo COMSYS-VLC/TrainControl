@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +29,10 @@ public class ControlPanelFragment extends Fragment implements ReceivingFragment 
         }
     };
 
-    private ImageView mLEDViews[] = new ImageView[4];
-    private LEDState mLEDStates[] = new LEDState[] { LEDState.OFF, LEDState.OFF,
+    private final ImageView[] mLEDViews = new ImageView[4];
+    private final LEDState[] mLEDStates = new LEDState[] { LEDState.OFF, LEDState.OFF,
             LEDState.OFF, LEDState.OFF };
-    private Handler mBlinkHandler = new Handler();
+    private final Handler mBlinkHandler = new Handler();
     private boolean mBlinkState = false;
 
     private final View.OnClickListener mLEDClickListener = new View.OnClickListener() {
@@ -140,7 +141,8 @@ public class ControlPanelFragment extends Fragment implements ReceivingFragment 
         mLEDViews[2] = (ImageView) view.findViewById(R.id.image_led_rear_left);
         mLEDViews[3] = (ImageView) view.findViewById(R.id.image_led_rear_right);
 
-        final ColorStateList tintColor = ColorStateList.valueOf(getResources().getColor(R.color.colorAccent));
+        //final ColorStateList tintColor = ColorStateList.valueOf(getResources().getColor(R.color.colorAccent));
+        final ColorStateList tintColor = ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorAccent));
         for(int i = 0; i < 4; ++i) {
             mLEDViews[i].setOnClickListener(mLEDClickListener);
             mLEDViews[i].setImageTintMode(PorterDuff.Mode.DST);
@@ -282,7 +284,7 @@ public class ControlPanelFragment extends Fragment implements ReceivingFragment 
                     return 2;
             }
             return -1;
-        };
+        }
 
         public static LEDState intToValue(int value) {
             switch(value) {

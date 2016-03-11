@@ -9,12 +9,15 @@
       <w>blerx</w>
       <w>bleservice</w>
       <w>bletx</w>
+      <w>comsys</w>
       <w>ddea</w>
       <w>devaddr</w>
       <w>devname</w>
       <w>edevice</w>
       <w>errstr</w>
+      <w>nbytes</w>
       <w>preloader</w>
+      <w>rwthaachen</w>
     </words>
   </dictionary>
 </component>

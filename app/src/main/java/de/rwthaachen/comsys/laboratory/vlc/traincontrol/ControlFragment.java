@@ -58,7 +58,7 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
     private BluetoothGattCharacteristic mBleRxCharacteristic;
     private BluetoothGattCharacteristic mBleTxCharacteristic;
 
-    private BluetoothGattCallback mBleGattCallback = new BluetoothGattCallback() {
+    private final BluetoothGattCallback mBleGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             final Activity activity = getActivity();
@@ -171,7 +171,7 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
         }
     };
 
-    private BroadcastReceiver mBondReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mBondReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(null != mBleDevice) {
@@ -194,8 +194,8 @@ public class ControlFragment extends Fragment implements ConnectFragment.Connect
         // Required empty public constructor
     }
 
-    public static ControlFragment newInstance(String bleDeviceName, String bleDeviceAddr, String bleServiceUuid,
-                                              String bleRxCharacteristicUuid, String bleTxCharacteristicUuid) {
+    public static ControlFragment newInstance(String bleDeviceName, String bleDeviceAddr, @SuppressWarnings("SameParameterValue") String bleServiceUuid,
+                                              @SuppressWarnings("SameParameterValue") String bleRxCharacteristicUuid, @SuppressWarnings("SameParameterValue") String bleTxCharacteristicUuid) {
         ControlFragment fragment = new ControlFragment();
         Bundle args = new Bundle();
         args.putString(ARG_BLE_DEVICE_NAME, bleDeviceName);

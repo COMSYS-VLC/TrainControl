@@ -1,5 +1,5 @@
 package de.rwthaachen.comsys.laboratory.vlc.traincontrol;
 
-public interface ReceivingFragment {
+interface ReceivingFragment {
     void handlePayload(byte[] data);
 }

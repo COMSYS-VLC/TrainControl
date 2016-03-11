@@ -15,7 +15,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:src="@drawable/ic_led"
-        android:rotation="180"/>
+        android:rotation="180"
+        android:contentDescription="@null" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -24,7 +25,8 @@
         android:src="@drawable/ic_led"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:rotation="180" />
+        android:rotation="180"
+        android:contentDescription="@null"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -32,7 +34,8 @@
         android:id="@+id/image_led_rear_left"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:src="@drawable/ic_led" />
+        android:src="@drawable/ic_led"
+        android:contentDescription="@null"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -40,7 +43,8 @@
         android:id="@+id/image_led_rear_right"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_led" />
+        android:src="@drawable/ic_led"
+        android:contentDescription="@null"/>
 
     <SeekBar
         android:layout_width="fill_parent"
@@ -60,7 +64,8 @@
         android:src="@drawable/ic_arrow_forward"
         android:layout_above="@+id/slider_speed"
         android:layout_marginBottom="33dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -69,7 +74,8 @@
         android:src="@drawable/ic_arrow_backward"
         android:layout_below="@+id/slider_speed"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="33dp" />
+        android:layout_marginTop="33dp"
+        android:contentDescription="@null" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -77,6 +83,7 @@
         android:id="@+id/image_turnout"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_straight" />
+        android:src="@drawable/ic_straight"
+        android:contentDescription="@null" />
 
 </RelativeLayout>

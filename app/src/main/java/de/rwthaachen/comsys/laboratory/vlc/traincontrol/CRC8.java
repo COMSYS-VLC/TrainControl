@@ -4,7 +4,7 @@ package de.rwthaachen.comsys.laboratory.vlc.traincontrol;
  * Created by Michael on 07.03.2016.
  * Calculate CRC-8 checksum.
  */
-public class CRC8 {
+class CRC8 {
     private static final byte POLYNOMIAL = 0x07;
     private byte mCrc = 0;
 
@@ -22,7 +22,7 @@ public class CRC8 {
      * @param off The offset.
      * @param nbytes The length.
      */
-    public void update(byte[] buf, int off, int nbytes) {
+    public void update(byte[] buf, @SuppressWarnings("SameParameterValue") int off, @SuppressWarnings("SameParameterValue") int nbytes) {
         for (int i = 0; i < nbytes; i++) {
             update(buf[off + i]);
         }

@@ -14,7 +14,8 @@
         android:indeterminateOnly="true"
         android:layout_marginLeft="308dp"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        tools:ignore="RtlHardcoded" />
 
     <TextView
         android:layout_width="wrap_content"

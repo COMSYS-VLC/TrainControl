@@ -43,8 +43,8 @@ public class ScanningFragment extends Fragment {
 
     private String mBleServiceUuid;
     private BluetoothLeScanner mBLeScanner;
-    private Handler mHandler = new Handler();
-    private LeScanCallback mScanCallback = new LeScanCallback();
+    private final Handler mHandler = new Handler();
+    private final LeScanCallback mScanCallback = new LeScanCallback();
     private boolean mScanning = false;
 
     private ProgressBar mProgressBar;
@@ -62,7 +62,7 @@ public class ScanningFragment extends Fragment {
      * @param bleServiceUuid Bluetooth LE Service Id to scan for.
      * @return A new instance of fragment ScanningFragment.
      */
-    public static ScanningFragment newInstance(String bleServiceUuid) {
+    public static ScanningFragment newInstance(@SuppressWarnings("SameParameterValue") String bleServiceUuid) {
         ScanningFragment fragment = new ScanningFragment();
         Bundle args = new Bundle();
         args.putString(ARG_BLE_SERVICE_UUID, bleServiceUuid);

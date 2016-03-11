@@ -38,17 +38,15 @@
             android:layout_height="wrap_content"
             android:text="@string/retry"
             android:id="@+id/button_retry"
-            android:layout_below="@+id/text_connect_error_msg"
-            android:layout_alignStart="@+id/text_connect_error_name"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/scan_other"
             android:id="@+id/button_scan"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/text_connect_error_msg"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            tools:ignore="ButtonStyle" />
     </LinearLayout>
 </RelativeLayout>

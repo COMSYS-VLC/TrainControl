@@ -1,5 +1,5 @@
 package de.rwthaachen.comsys.laboratory.vlc.traincontrol;
 
-public interface SendingFragment {
+interface SendingFragment {
     void sendPayload(byte[] data);
 }

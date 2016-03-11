@@ -2,7 +2,7 @@
     <string name="app_name">TrainControl</string>
     <string name="action_reconnect">Reconnect</string>
     <string name="location_required">Localization must be enabled to find Bluetooth devices</string>
-    <string name="connect_device_name">Connecting to BLE device %1$s...</string>
+    <string name="connect_device_name">Connecting to BLE device %1$s…</string>
     <string name="connect_device_addr">(%1$s)</string>
     <string name="connect_device_error_name">Connection to %1$s failed.</string>
     <string name="retry">Retry</string>
@@ -20,6 +20,6 @@
     <string name="bluetooth_not_enabled">Bluetooth is not enabled</string>
     <string name="enable_bluetooth">Enable bluetooth</string>
     <string name="bluetooth_required">Bluetooth is required for this app to function</string>
-    <string name="scanning">Scanning...</string>
+    <string name="scanning">Scanning…</string>
     <string name="no_matching_device">No matching device found</string>
 </resources>
