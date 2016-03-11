@@ -30,6 +30,9 @@ import android.widget.Toast;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Fragment used to scan for available BLE devices.
+ */
 public class ScanningFragment extends Fragment {
     public interface BluetoothScanResultUser {
         void bleDeviceFound(BluetoothDevice device);
@@ -121,6 +124,9 @@ public class ScanningFragment extends Fragment {
         mBLeScanner = null;
     }
 
+    /**
+     * Start scanning for BLE devices.
+     */
     private void startScan() {
         if(mScanning) {
             return;
@@ -162,6 +168,9 @@ public class ScanningFragment extends Fragment {
         Log.d("BLEScan", "Started...");
     }
 
+    /**
+     * Abort the scan for BLE devices.
+     */
     private void abortScan() {
         stopScan();
         mProgressBar.setVisibility(View.GONE);
@@ -187,6 +196,9 @@ public class ScanningFragment extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    /**
+     * Stop scanning for BLE devices.
+     */
     private void stopScan() {
         mHandler.removeCallbacksAndMessages(null);
         if(null != mBLeScanner && mScanning) {
@@ -195,6 +207,9 @@ public class ScanningFragment extends Fragment {
         }
     }
 
+    /**
+     * Callback for the BLE scan results.
+     */
     private class LeScanCallback extends ScanCallback {
         @Override
         public void onScanFailed(int errorCode) {

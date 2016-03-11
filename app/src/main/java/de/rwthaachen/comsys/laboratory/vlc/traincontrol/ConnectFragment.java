@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Fragment which is shown when the connection to a BLE device is currently established.
  */
 public class ConnectFragment extends Fragment {
 
@@ -30,7 +31,6 @@ public class ConnectFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

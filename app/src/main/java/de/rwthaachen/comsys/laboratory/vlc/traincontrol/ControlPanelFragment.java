@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-
+/**
+ * Fragment which is used to update the GUI on TrackController-updates and to recognize user input.
+ */
 public class ControlPanelFragment extends Fragment implements ReceivingFragment {
 
     private static final int ID_TURNOUT = 0;
@@ -108,6 +110,11 @@ public class ControlPanelFragment extends Fragment implements ReceivingFragment 
         // Required empty public constructor
     }
 
+    /**
+     * Update the GUI when recceiving data from the BLE device.
+     * @param data 2 Bytes, first the id which indicates the type (Turnout, Speed or LED),
+     *             second the payload (what should happen to the specified type).
+     */
     @Override
     public void handlePayload(byte[] data) {
         final int id = data[0];
@@ -141,7 +148,7 @@ public class ControlPanelFragment extends Fragment implements ReceivingFragment 
         mLEDViews[2] = (ImageView) view.findViewById(R.id.image_led_rear_left);
         mLEDViews[3] = (ImageView) view.findViewById(R.id.image_led_rear_right);
 
-        //final ColorStateList tintColor = ColorStateList.valueOf(getResources().getColor(R.color.colorAccent));
+        // Deprecated: final ColorStateList tintColor = ColorStateList.valueOf(getResources().getColor(R.color.colorAccent));
         final ColorStateList tintColor = ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorAccent));
         for(int i = 0; i < 4; ++i) {
             mLEDViews[i].setOnClickListener(mLEDClickListener);
@@ -183,6 +190,9 @@ public class ControlPanelFragment extends Fragment implements ReceivingFragment 
         }
     }
 
+    /**
+     * Update the turnout status.
+     */
     private void toggleTurnout() {
         mTurnoutStraight = !mTurnoutStraight;
         applyTurnout();
@@ -195,6 +205,9 @@ public class ControlPanelFragment extends Fragment implements ReceivingFragment 
         }
     }
 
+    /**
+     * Either put the turnout image to straight or diverging.
+     */
     private void applyTurnout() {
         if(mTurnoutStraight) {
             mTurnout.setImageResource(R.drawable.ic_straight);
@@ -203,6 +216,10 @@ public class ControlPanelFragment extends Fragment implements ReceivingFragment 
         }
     }
 
+    /**
+     * Update the LED status.
+     * @param index The LED which has to be updated.
+     */
     private void toggleLED(int index) {
         switch(mLEDStates[index]) {
             case OFF:
@@ -232,6 +249,10 @@ public class ControlPanelFragment extends Fragment implements ReceivingFragment 
         }
     }
 
+    /**
+     * Update the specified LED image.
+     * @param index The LED whose image has to be updated.
+     */
     private void applyLEDState(int index) {
         switch(mLEDStates[index]) {
             case OFF:
@@ -250,6 +271,11 @@ public class ControlPanelFragment extends Fragment implements ReceivingFragment 
         }
     }
 
+    /**
+     * Update the speed status.
+     * @param speed The speed value.
+     * @param notify send to TrackController if true.
+     */
     private void setSpeed(int speed, boolean notify) {
         if(speed != mCurrentSpeed) {
             mCurrentSpeed = speed;
@@ -269,6 +295,9 @@ public class ControlPanelFragment extends Fragment implements ReceivingFragment 
         }
     }
 
+    /**
+     * Define the possible LED states: OFF, BLINKING and ON.
+     */
     private enum LEDState {
         OFF,
         BLINKING,

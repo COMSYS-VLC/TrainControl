@@ -13,6 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+/**
+ * MainActivity. Starting point of the application.
+ */
 public class MainActivity extends AppCompatActivity implements BluetoothEnableFragment.BluetoothEnabler, ScanningFragment.BluetoothScanResultUser, ControlFragment.ScanInitiator {
 
     private final static int REQUEST_ENABLE_BT = 1; // Request code for bluetooth enable intent.
@@ -37,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements BluetoothEnableFr
         mPreferences = getPreferences(Context.MODE_PRIVATE);
     }
 
+    /**
+     * Check if current device has a BluetoothAdapter and Bluetooth enabled.
+     */
     private void checkBluetooth() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         final BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
@@ -52,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements BluetoothEnableFr
         }
     }
 
+    /**
+     * Request the user to enable Bluetooth.
+     */
     private void requestBluetoothEnable() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new BluetoothEnableFragment()).commit();
@@ -109,6 +118,9 @@ public class MainActivity extends AppCompatActivity implements BluetoothEnableFr
         checkBluetooth();
     }
 
+    /**
+     * Send an intent to the user: Politely ask to enable Bluetooth.
+     */
     @Override
     public void enableBluetooth() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
@@ -120,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements BluetoothEnableFr
         }
     }
 
+    /**
+     * When a BLE device is found, update the BLE preferences and start connecting to the device.
+     * @param device The BLE device.
+     */
     @Override
     public void bleDeviceFound(BluetoothDevice device) {
         mPreferences.edit()
@@ -129,12 +145,20 @@ public class MainActivity extends AppCompatActivity implements BluetoothEnableFr
         startConnection(device.getName(), device.getAddress());
     }
 
+    /**
+     * Start a BLE scan for a device with the current BLEEBee service UUID.
+     */
     @Override
     public void startScan() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, ScanningFragment.newInstance(BLEBEE_SERVICE_UUID)).commit();
     }
 
+    /**
+     * Start a BLE connection to the specified BLE device.
+     * @param bleDevName BLE device name.
+     * @param bleDevAddr BLE device address.
+     */
     private void startConnection(String bleDevName, String bleDevAddr) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, ControlFragment.newInstance(bleDevName, bleDevAddr,

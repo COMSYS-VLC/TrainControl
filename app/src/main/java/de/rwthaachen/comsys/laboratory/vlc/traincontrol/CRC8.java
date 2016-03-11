@@ -1,7 +1,6 @@
 package de.rwthaachen.comsys.laboratory.vlc.traincontrol;
 
 /**
- * Created by Michael on 07.03.2016.
  * Calculate CRC-8 checksum.
  */
 class CRC8 {
@@ -17,7 +16,7 @@ class CRC8 {
     }
 
     /**
-     *
+     * Update the checksum.
      * @param buf The input buffer.
      * @param off The offset.
      * @param nbytes The length.
@@ -28,6 +27,10 @@ class CRC8 {
         }
     }
 
+    /**
+     * Update the checksum.
+     * @param val The update-value.
+     */
     public void update(byte val) {
         mCrc ^= val;
         for (int i = 0; i < 8; ++i) {

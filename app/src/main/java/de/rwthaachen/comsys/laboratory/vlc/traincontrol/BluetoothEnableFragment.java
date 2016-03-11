@@ -10,6 +10,7 @@ import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Ask the user to enable Bluetooth on its device.
  */
 public class BluetoothEnableFragment extends Fragment {
     public interface BluetoothEnabler {

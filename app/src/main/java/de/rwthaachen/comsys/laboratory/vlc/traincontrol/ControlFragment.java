@@ -30,6 +30,8 @@ import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Control the BLE connection. This includes reading from and writing to the BLEBee.
+ * Android Developer Tutorial: http://developer.android.com/guide/topics/connectivity/bluetooth-le.html.
  */
 public class ControlFragment extends Fragment implements ConnectFragment.ConnectAbortHandler,
         ConnectErrorFragment.ConnectErrorHandler, SendingFragment {

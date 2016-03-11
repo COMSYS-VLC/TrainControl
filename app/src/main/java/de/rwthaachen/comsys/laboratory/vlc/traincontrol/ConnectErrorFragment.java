@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-
+/**
+ * Fragment which is shown when the connection to a BLE device failed.
+ */
 public class ConnectErrorFragment extends Fragment {
     public interface ConnectErrorHandler {
         void retryConnect();
